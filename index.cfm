@@ -9,7 +9,17 @@
 	<cfdump var="#getHTTPRequestData()#" label="CGI Scope" />
 	<script language="javascript">
 		// Create a new WebSocket connection
-		const socket = new WebSocket('ws#(cgi.https ? 's' : '')#://#cgi.server_name#:#cgi.SERVER_PORT#/ws');
+		<cfscript>
+			connectionAddress = '://#cgi.server_name#:#cgi.SERVER_PORT#/ws'
+			if( cgi.https == true || cgi.https == 'on' ) {
+				connectionAddress = 'wss' & connectionAddress;
+			} else if( getHTTPRequestData().headers['x-forwarded-proto'] ?: '' == 'https' ) {
+				connectionAddress = 'wss' & connectionAddress;
+			} else {
+				connectionAddress = 'ws' & connectionAddress;
+			}
+		</cfscript>
+		const socket = new WebSocket('#connectionAddress#');
 
 		// Event listener for when the connection is open
 		socket.addEventListener('open', function (event) {
