@@ -3,5 +3,6 @@ services:
   - type: web
     name: SocketBox Demo
     runtime: docker
+    dockerfilePath: ./Dockerfile 
     plan: free
     autoDeploy: true  # Set to true for auto-deploy on push
