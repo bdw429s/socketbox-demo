@@ -2,7 +2,7 @@
 	<h1>Web Socket test</h1>
 	<script language="javascript">
 		// Create a new WebSocket connection
-		const socket = new WebSocket('ws://#cgi.server_name#:#cgi.SERVER_PORT#/ws');
+		const socket = new WebSocket('ws#(cgi.https ? 's' : '')#://#cgi.server_name#:#cgi.SERVER_PORT#/ws');
 
 		// Event listener for when the connection is open
 		socket.addEventListener('open', function (event) {

@@ -1,0 +1,11 @@
+component {
+
+	settings = {
+
+	};
+
+	function configure() {
+
+	}
+	
+}

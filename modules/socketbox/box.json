@@ -1,0 +1,32 @@
+{
+    "author":"Brad Wood",
+    "description":"WebSocket Listener library to be used with CommandBox Websocket and BoxLang WebSocket server.",
+    "documentation":"https://forgebox.io/view/socketbox",
+    "homepage":"https://forgebox.io/view/socketbox",
+    "ignore":[
+        "**/.*",
+        "/test/",
+        "/tests/"
+    ],
+    "license":[
+        {
+            "type":"Apache 2.0",
+            "URL":"https://github.com/coldbox-modules/SocketBox/blob/master/LICENSE"
+        }
+    ],
+    "location":"ForgeboxStorage",
+    "name":"SocketBox",
+    "projectURL":"https://forgebox.io/view/socketbox",
+    "repository":{
+        "type":"Git",
+        "URL":"https://github.com/coldbox-modules/SocketBox"
+    },
+    "scripts":{
+        "onRelease":"publish",
+        "postPublish":"!git push --follow-tags"
+    },
+    "shortDescription":"WebSocket Listener library",
+    "slug":"socketbox",
+    "type":"modules",
+    "version":"1.0.0"
+}
