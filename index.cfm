@@ -13,7 +13,7 @@
 			connectionAddress = '://#cgi.server_name#:#cgi.SERVER_PORT#/ws'
 			if( cgi.https == true || cgi.https == 'on' ) {
 				connectionAddress = 'wss' & connectionAddress;
-			} else if( getHTTPRequestData().headers['x-forwarded-proto'] ?: '' == 'https' ) {
+			} else if( (getHTTPRequestData().headers['x-forwarded-proto'] ?: '') == 'https' ) {
 				connectionAddress = 'wss' & connectionAddress;
 			} else {
 				connectionAddress = 'ws' & connectionAddress;
