@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SocketBox Demo</title>
+</head>
+<body>
 <cfoutput>
 	<h1>SocketBox Demo</h1>
 	<p>
@@ -18,6 +24,7 @@
 			}
 		</cfscript>
 		const socket = new WebSocket('#connectionAddress#');
+	<body>
 
 		// Event listener for when the connection is open
 		socket.addEventListener('open', function (event) {
@@ -54,4 +61,6 @@
 		<input type="submit" value="Send" onClick="socket.send( 'new-message: ' + document.getElementById('message').value )" />
 	</form>
 
+	</body>
 </cfoutput>
+</html>
