@@ -6,6 +6,7 @@
 		to be able to easily create WebSocket servers in CFML that work for Adobe ColdFusion, Lucee Server, or BoxLang!  
 	</p>
 	<cfdump var="#cgi#" label="CGI Scope" />
+	<cfdump var="#getHTTPRequestData()#" label="CGI Scope" />
 	<script language="javascript">
 		// Create a new WebSocket connection
 		const socket = new WebSocket('ws#(cgi.https ? 's' : '')#://#cgi.server_name#:#cgi.SERVER_PORT#/ws');
