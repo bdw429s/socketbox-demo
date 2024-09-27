@@ -5,8 +5,6 @@
 		<a href="https://forgebox.io/view/socketbox">SocketBox library</a>.  SocketBox is a new feature built into CommandBox and the BoxLang MiniServer 
 		to be able to easily create WebSocket servers in CFML that work for Adobe ColdFusion, Lucee Server, or BoxLang!  
 	</p>
-	<cfdump var="#cgi#" label="CGI Scope" />
-	<cfdump var="#getHTTPRequestData()#" label="CGI Scope" />
 	<script language="javascript">
 		// Create a new WebSocket connection
 		<cfscript>
