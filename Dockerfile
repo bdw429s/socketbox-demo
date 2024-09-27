@@ -1,4 +1,4 @@
-FROM ortussolutions/boxlang:miniserver-alpine
+FROM ortussolutions/boxlang:miniserver
 RUN rm /app/* -r 
 ENV BOXLANG_PORT=10000
 COPY ./ /app
