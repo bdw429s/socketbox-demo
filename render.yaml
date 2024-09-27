@@ -2,8 +2,6 @@ version: 1
 services:
   - type: web
     name: SocketBox Demo
-    runtime: image
+    runtime: docker
     plan: free
-    image:
-      url: ortussolutions/boxlang:miniserver 
     autoDeploy: true  # Set to true for auto-deploy on push
