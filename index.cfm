@@ -1,5 +1,11 @@
 <cfoutput>
-	<h1>Web Socket test</h1>
+	<h1>SocketBox Demo</h1>
+	<p>
+		This is a simple chat application that uses WebSockets to communicate with the server. It is built using CFML (running on BoxLang) and our new 
+		<a href="https://forgebox.io/view/socketbox">SocketBox library</a>.  SocketBox is a new feature built into CommandBox and the BoxLang MiniServer 
+		to be able to easily create WebSocket servers in CFML that work for Adobe ColdFusion, Lucee Server, or BoxLang!  
+	</p>
+	<cfdump var="#cgi#" label="CGI Scope" />
 	<script language="javascript">
 		// Create a new WebSocket connection
 		const socket = new WebSocket('ws#(cgi.https ? 's' : '')#://#cgi.server_name#:#cgi.SERVER_PORT#/ws');
@@ -27,14 +33,15 @@
 		});
 	</script>
 
-	Your Name: <input type="text" id="name" name="name" value="User #randRange( 1000, 5000 )#" onChange="socket.send( 'user-rename: ' + this.value )" /><br>
+	Your Name: <input type="text" id="name" name="name" size="10" value="User #randRange( 1000, 5000 )#" onChange="socket.send( 'user-rename: ' + this.value )" /><br>
 	Users Online: <span id="users">0</span><br>
 	<br>
 	<textarea id="chat" rows="15" cols="100"></textarea>
 	<br>
-
+	<br>
+	Type a message to send to the chat room:<br>
 	<form action="sender.cfm" method="post" onsubmit="return false;">
-		<input type="text" id="message" name="message" value="" />
+		<input type="text" id="message" name="message" value="" size="50" />
 		<input type="submit" value="Send" onClick="socket.send( 'new-message: ' + document.getElementById('message').value )" />
 	</form>
 
