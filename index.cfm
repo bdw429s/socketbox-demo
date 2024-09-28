@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
 <head>
 	<title>SocketBox Demo</title>
 	<link
@@ -19,15 +19,14 @@
 			to be able to easily create WebSocket servers in CFML that work for Adobe ColdFusion, Lucee Server, or BoxLang!  
 		</p>
 		
-
 		<label for="name">Your Name:</label> 
 		<input type="text" id="name" name="name" size="10" value="User #randRange( 1000, 5000 )#" onChange="socket.send( 'user-rename: ' + this.value ); updateUsernameColor();" /><br>
 		<strong>Users Online:</strong> <span id="users">0</span><br>
-		<br>
+		<br/>
 		<div id="chat" class="chat"></div>
 	
-		Type a message to send to the chat room:<br>
 		<form action="sender.cfm" method="post" onsubmit="return false;">
+			<label for="message">Type a message to send to the chat room:</label>
 			<input type="text" id="message" name="message" value="" size="50" />
 			<input type="submit" value="Send" onClick="sendMessage()" />
 		</form>
