@@ -11,7 +11,7 @@
 <body>
 <cfoutput>
 	<body>
-		<main class="container-fluid">
+		<main class="container">
 		<h1>SocketBox Demo</h1>
 		<p>
 			This is a simple chat application that uses WebSockets to communicate with the server. It is built using CFML (running on BoxLang) and our new 
@@ -24,10 +24,8 @@
 		<input type="text" id="name" name="name" size="10" value="User #randRange( 1000, 5000 )#" onChange="socket.send( 'user-rename: ' + this.value ); updateUsernameColor();" /><br>
 		<strong>Users Online:</strong> <span id="users">0</span><br>
 		<br>
-		<label for="chat" class="sr-only">chat:</label>
-		<div id="chat" style="width: 100%; height: 15em; overflow-y: scroll; border: 1px solid ##ccc;"></div>
-		<br>
-		<br>
+		<div id="chat" class="chat"></div>
+	
 		Type a message to send to the chat room:<br>
 		<form action="sender.cfm" method="post" onsubmit="return false;">
 			<input type="text" id="message" name="message" value="" size="50" />

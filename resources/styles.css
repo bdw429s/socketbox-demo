@@ -41,3 +41,12 @@ label {
     white-space: nowrap !important;
     border: 0 !important;
 }
+.chat {
+    border: 1px solid var(--pico-form-element-border-color);
+    border-radius: var(--pico-border-radius);
+    height: 15em;
+    margin-bottom: calc( var( --pico-spacing) * 2 );
+    padding: var(--pico-spacing);
+    overflow-y: scroll;
+    width: 100%;
+}
