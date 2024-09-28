@@ -21,7 +21,7 @@
 		
 
 		<label for="name">Your Name:</label> 
-		<input type="text" id="name" name="name" size="10" value="User #randRange( 1000, 5000 )#" onChange="socket.send( 'user-rename: ' + this.value )" /><br>
+		<input type="text" id="name" name="name" size="10" value="User #randRange( 1000, 5000 )#" onChange="socket.send( 'user-rename: ' + this.value ); updateUsernameColor();" /><br>
 		<strong>Users Online:</strong> <span id="users">0</span><br>
 		<br>
 		<label for="chat" class="sr-only">chat:</label>
@@ -91,6 +91,14 @@
 				}
 			});
 
+			// Function to update the color of the username input
+			function updateUsernameColor() {
+				const usernameInput = document.getElementById('name');
+				const username = usernameInput.value;
+				const userColor = getColorForUsername(username);
+				usernameInput.style.color = userColor;
+			}
+
 			// Function to scroll chat to the bottom
 			function scrollChatToBottom() {
 				const chat = document.getElementById('chat');
@@ -139,6 +147,8 @@
 			socket.addEventListener('error', function (event) {
 				console.error('WebSocket error:', event);
 			});
+
+			updateUsernameColor();
 		</script>
 	</body>
 </cfoutput>
