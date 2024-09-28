@@ -124,8 +124,6 @@
 					'##8C33FF', // Purple
 					'##FFD433', // Yellow
 				];
-			} else {
-				
 			}
 
 			// Function to hash the username
