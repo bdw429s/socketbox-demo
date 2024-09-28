@@ -101,18 +101,32 @@
 				const chat = document.getElementById('chat');
 				chat.scrollTop = chat.scrollHeight;
 			}
-
-			// Array of easy-to-read primary colors
-			const colors = [
-				'##FF5733', // Red
-				'##33FF57', // Green
-				'##3357FF', // Blue
-				'##FF33A1', // Pink
-				'##FF8C33', // Orange
-				'##33FFF5', // Cyan
-				'##8C33FF', // Purple
-				'##FFD433', // Yellow
+			
+			let colors = [
+				'##DB0538', // Red
+				'##14960B', // Green
+				'##1A6BB8', // Blue
+				'##A822BF', // Pink
+				'##C94A2A', // Orange
+				'##0D948F', // Cyan
+				'##4A13BF', // Purple
+				'##AD8813', // Yellow
 			];
+			if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+				// Array of easy-to-read primary colors
+				colors = [
+					'##FF5733', // Red
+					'##33FF57', // Green
+					'##3357FF', // Blue
+					'##FF33A1', // Pink
+					'##FF8C33', // Orange
+					'##33FFF5', // Cyan
+					'##8C33FF', // Purple
+					'##FFD433', // Yellow
+				];
+			} else {
+				
+			}
 
 			// Function to hash the username
 			function hashUsername(username) {
