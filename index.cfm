@@ -91,7 +91,7 @@
 						scrollChatToBottom(); 
 					} else {
 						// if message contains text "has joined" or "changed their name" then color grey
-						if (message.indexOf('has joined') > 0 || message.indexOf('changed their name') > 0) {
+						if (message.indexOf('has joined') > 0 ||message.indexOf('has left') > 0 || message.indexOf('changed their name') > 0) {
 							message = '<span style="color: grey;">' + escapeHTML(message) + '</span><br>';
 						} else {
 							message = '<b style="color: red;">' + escapeHTML(message) + "</b><br>";
