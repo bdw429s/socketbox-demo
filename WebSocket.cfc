@@ -9,6 +9,7 @@ component extends="modules.socketbox.models.WebSocketCore" {
 			var name = message.replace( "new-user: ", "" );
 			application.chatNames[ channel.hashCode() ] = name;
 			broadcastMessage( "new-message: " & name & " has joined the chat" );
+			updateUserCount()
 		} else if( message.startsWith( "new-message: " ) ) {
 			var message = message.replace( "new-message: ", "" );
 			broadcastMessage( "new-message: " & getUserName( channel ) & ": " & message );
@@ -16,6 +17,7 @@ component extends="modules.socketbox.models.WebSocketCore" {
 			var newName = message.replace( "user-rename: ", "" );
 			broadcastMessage( "new-message: " & getUserName( channel ) & " has changed their name to " & newName );
 			application.chatNames[ channel.hashCode() ] = newName;
+			updateUserCount()
 		}
 	}
 
@@ -32,7 +34,8 @@ component extends="modules.socketbox.models.WebSocketCore" {
 	}
 
 	function updateUserCount() {
-		broadcastMessage( "num-connections: " & getAllConnections().len() );
+		var connections = getAllConnections();
+		broadcastMessage( "num-connections: " & connections.len() & ";" & serializeJSON( application.chatNames.valueArray() ) );
 	}
 
 	function getUserName( required channel ) {

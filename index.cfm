@@ -21,7 +21,11 @@
 		
 		<label for="name">Your Name:</label> 
 		<input type="text" id="name" name="name" size="10" value="User #randRange( 1000, 5000 )#" onChange="socket.send( 'user-rename: ' + this.value ); updateUsernameColor();" /><br>
-		<strong>Users Online:</strong> <span id="users">0</span><br>
+		<span id="users-online" title="">
+		<strong>Users Online: &nbsp;&nbsp; <span id="users" style="font-size: 1.5em;">0</span></strong><br>
+		<em>(Hover to see names)</em>
+		</span>
+		<br/>
 		<br/>
 		<div id="chat" class="chat"></div>
 	
@@ -63,7 +67,18 @@
 				let message = event.data;
 				console.log('Message from server:', message);
 				if( message.indexOf('num-connections: ') == 0 ) {
-					document.getElementById('users').innerText = message.replace('num-connections: ', '');
+					message = message.replace('num-connections: ', '');
+					let parts = message.split(/;(.+)/); // Split only on the first semicolon
+					document.getElementById('users').innerText = parts[0];
+					let namesJSON = parts[1];
+					// array of strings
+					let names = JSON.parse(namesJSON);
+					// Build HTML list of escaped user names from the array in names
+					let userList = names.map(function(name) {
+						return escapeHTML(name);
+					}).join('\n');
+					document.getElementById('users-online').title = userList;
+					
 				} else if( message.indexOf('new-message: ') == 0 ) {
 					message = message.replace('new-message: ', '');
 					// if message is "user name: actual message"
@@ -79,7 +94,7 @@
 						if (message.indexOf('has joined') > 0 || message.indexOf('changed their name') > 0) {
 							message = '<span style="color: grey;">' + escapeHTML(message) + '</span><br>';
 						} else {
-							message = escapeHTML(message) + "<br>";
+							message = '<b style="color: red;">' + escapeHTML(message) + "</b><br>";
 						}
 						document.getElementById('chat').innerHTML += message;
 						scrollChatToBottom(); 
