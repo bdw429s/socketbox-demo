@@ -20,7 +20,7 @@
 		</p>
 
 		<label for="name">Your Name:</label>
-		<input type="text" id="name" name="name" size="10" value="User #randRange( 1000, 5000 )#" onChange="socket.send( 'user-rename: ' + this.value ); updateUsernameColor();" /><br>
+		<input type="text" id="name" name="name" size="10" value="User #randRange( 1000, 5000 )#" onChange="socket.send( 'user-rename: ' + this.value ); updateUsernameColor(); updateUsername(this.value);" /><br>
 		<span id="users-online" title="">
 		<strong>Users Online: &nbsp;&nbsp; <span id="users" style="font-size: 1.5em;">0</span></strong><br>
 		<em>(Hover to see names)</em>
@@ -178,7 +178,7 @@
 
 			// history
 			function loadHistory(){
-				if (!'history' in localStorage) return;
+				if (!('history' in localStorage)) return;
 				const hist = JSON.parse(localStorage.getItem("history"));
 				hist.forEach((msg) => {
 					document.getElementById('chat').innerHTML += msg;
@@ -194,6 +194,18 @@
 
 			loadHistory();
 
+			// username
+			function getUsername(){
+				if (!('username' in localStorage)) return;
+				document.getElementById('name').value = localStorage.getItem('username');
+				updateUsernameColor();
+			}
+
+			function updateUsername(username){
+				localStorage.setItem('username', username);
+			}
+
+			getUsername()
 		</script>
 	</body>
 </cfoutput>
