@@ -202,7 +202,7 @@
 			}
 
 			function updateUsername(username){
-				localStorage.setItem('username', username)
+				localStorage.setItem('username', username);
 			}
 
 			getUsername()
