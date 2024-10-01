@@ -28,6 +28,8 @@
 		<br/>
 		<br/>
 		<div id="chat" class="chat"></div>
+		<a href="##" style="float: right;" onclick="clearChat()">Clear Chat</a><BR>
+
 
 		<form action="sender.cfm" method="post" onsubmit="return false;">
 			<label for="message">Type a message to send to the chat room:</label>
@@ -36,6 +38,7 @@
 		</form>
 		</main>
 		<script language="javascript">
+			reconnecting = false;
 			function sendMessage() {
 				el = document.getElementById('message');
 				if( el.value.trim() == '' ) return;
@@ -54,56 +57,82 @@
 				}
 				connectionAddress = connectionAddress & '/ws';
 			</cfscript>
-			const socket = new WebSocket('#connectionAddress#');
-			// Event listener for when the connection is open
-			socket.addEventListener('open', function (event) {
-				console.log('Connected to WebSocket server');
-				socket.send( "new-user: " + document.getElementById('name').value );
-			});
 
-			// Event listener for receiving messages
-			socket.addEventListener('message', function (event) {
-				let message = event.data;
-				console.log('Message from server:', message);
-				if( message.indexOf('num-connections: ') == 0 ) {
-					message = message.replace('num-connections: ', '');
-					let parts = message.split(/;(.+)/); // Split only on the first semicolon
-					document.getElementById('users').innerText = parts[0];
-					let namesJSON = parts[1];
-					// array of strings
-					let names = JSON.parse(namesJSON);
-					// Build HTML list of escaped user names from the array in names
-					let userList = names.map(function(name) {
-						return escapeHTML(name);
-					}).join('\n');
-					document.getElementById('users-online').title = userList;
+			function connect() {
+				socket = new WebSocket('#connectionAddress#');
+				socket.onopen = function() {
+					reconnecting = false;
+					console.log('Connected to WebSocket server');
+					socket.send( "new-user: " + document.getElementById('name').value );
+					message = '<br><span style="color: grey;"><em>WebSocket connected.</em></span><br>';
+					document.getElementById('chat').innerHTML += message;
+					scrollChatToBottom();
+				};
 
-				} else if( message.indexOf('new-message: ') == 0 ) {
-					message = message.replace('new-message: ', '');
-					// if message is "user name: actual message"
-					// wrap bold around the user name and escape any HTML in the actual message
-					if (message.indexOf(':') > 0) {
-						let parts = message.split(/:(.+)/); // Split only on the first colon
-						let username = parts[0];
-						let userColor = getColorForUsername(username);
-						let html = '<strong style="color:' + userColor + ';">' + escapeHTML(username) + ':</strong> ' + escapeHTML(parts[1]) + "<br>";
-						document.getElementById('chat').innerHTML += html;
-						scrollChatToBottom();
-						addHistory(html);
-					} else {
-						// if message contains text "has joined" or "changed their name" then color grey
-						if (message.indexOf('has joined') > 0 ||message.indexOf('has left') > 0 || message.indexOf('changed their name') > 0) {
-							message = '<span style="color: grey;">' + escapeHTML(message) + '</span><br>';
+				socket.onmessage = function(event) {
+					let message = event.data;
+					console.log('Message from server:', message);
+					if( message.indexOf('num-connections: ') == 0 ) {
+						message = message.replace('num-connections: ', '');
+						let parts = message.split(/;(.+)/); // Split only on the first semicolon
+						document.getElementById('users').innerText = parts[0];
+						let namesJSON = parts[1];
+						// array of strings
+						let names = JSON.parse(namesJSON);
+						// Build HTML list of escaped user names from the array in names
+						let userList = names.map(function(name) {
+							return escapeHTML(name);
+						}).join('\n');
+						document.getElementById('users-online').title = userList;
+
+					} else if( message.indexOf('new-message: ') == 0 ) {
+						message = message.replace('new-message: ', '');
+						// if message is "user name: actual message"
+						// wrap bold around the user name and escape any HTML in the actual message
+						if (message.indexOf(':') > 0) {
+							let parts = message.split(/:(.+)/); // Split only on the first colon
+							let username = parts[0];
+							let userColor = getColorForUsername(username);
+							let html = '<strong style="color:' + userColor + ';">' + escapeHTML(username) + ':</strong> ' + escapeHTML(parts[1]) + "<br>";
+							document.getElementById('chat').innerHTML += html;
+							scrollChatToBottom();
+							addHistory(html);
 						} else {
-							message = '<b style="color: red;">' + escapeHTML(message) + "</b><br>";
+							// if message contains text "has joined" or "changed their name" then color grey
+							if (message.indexOf('has joined') > 0 ||message.indexOf('has left') > 0 || message.indexOf('changed their name') > 0) {
+								message = '<span style="color: grey;">' + escapeHTML(message) + '</span><br>';
+							} else {
+								message = '<b style="color: red;">' + escapeHTML(message) + "</b><br>";
+							}
+							document.getElementById('chat').innerHTML += message;
+							scrollChatToBottom();
+							// notifications
+							addHistory(message);
 						}
+					}
+				};
+
+				socket.onclose = function(e) {
+					if( !reconnecting ) {
+						console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+						message = '<span style="color: grey;"><em>WebSocket is closed. Reconnecting...</em></span>';
 						document.getElementById('chat').innerHTML += message;
 						scrollChatToBottom();
-						// notifications
-						addHistory(message);
+					} else {
+						document.getElementById('chat').innerHTML += '.';
 					}
-				}
-			});
+					
+					reconnecting = true;
+					setTimeout(function() {
+						connect();
+					}, 1000);
+				};
+
+				socket.onerror = function(err) {
+					console.error('Socket encountered error: ', err.message, 'Closing socket');
+					ws.close();
+				};
+			}
 
 			// Function to update the color of the username input
 			function updateUsernameColor() {
@@ -168,14 +197,6 @@
 						.replace(/'/g, '&##039;');
 			}
 
-
-			// Event listener for connection errors
-			socket.addEventListener('error', function (event) {
-				console.error('WebSocket error:', event);
-			});
-
-			updateUsernameColor();
-
 			// history
 			function loadHistory(){
 				if (!('history' in localStorage)) return;
@@ -192,8 +213,6 @@
 				localStorage.setItem("history", JSON.stringify(hist));
 			}
 
-			loadHistory();
-
 			// username
 			function getUsername(){
 				if (!('username' in localStorage)) return;
@@ -205,6 +224,15 @@
 				localStorage.setItem('username', username);
 			}
 
+			// Function to clear the chat and local history
+			function clearChat() {
+				document.getElementById('chat').innerHTML = '';
+				localStorage.removeItem('history');
+			}
+
+			connect();
+			updateUsernameColor();
+			loadHistory();
 			getUsername()
 		</script>
 	</body>

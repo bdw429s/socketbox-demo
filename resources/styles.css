@@ -45,7 +45,7 @@ label {
     border: 1px solid var(--pico-form-element-border-color);
     border-radius: var(--pico-border-radius);
     height: 15em;
-    margin-bottom: calc( var( --pico-spacing) * 2 );
+    margin-bottom: 0;
     padding: var(--pico-spacing);
     overflow-y: scroll;
     width: 100%;
