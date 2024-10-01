@@ -178,7 +178,7 @@
 
 			// history
 			function loadHistory(){
-				if (!'history' in localStorage) return;
+				if (!('history' in localStorage)) return;
 				const hist = JSON.parse(localStorage.getItem("history"));
 				hist.forEach((msg) => {
 					document.getElementById('chat').innerHTML += msg;
@@ -196,7 +196,7 @@
 
 			// username
 			function getUsername(){
-				if (!'username' in localStorage) return;
+				if (!('username' in localStorage)) return;
 				document.getElementById('name').value = localStorage.getItem('username');
 				updateUsernameColor();
 			}
