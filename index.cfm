@@ -3,8 +3,8 @@
 <head>
 	<title>SocketBox Demo</title>
 	<link
-  		rel="stylesheet"
-  		href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+				rel="stylesheet"
+				href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
 	>
 	<link rel="stylesheet" href="/resources/styles.css">
 </head>
@@ -86,10 +86,10 @@
 						let parts = message.split(/:(.+)/); // Split only on the first colon
 						let username = parts[0];
 						let userColor = getColorForUsername(username);
-      let html = '<strong style="color:' + userColor + ';">' + escapeHTML(username) + ':</strong> ' + escapeHTML(parts[1]) + "<br>";
+						let html = '<strong style="color:' + userColor + ';">' + escapeHTML(username) + ':</strong> ' + escapeHTML(parts[1]) + "<br>";
 						document.getElementById('chat').innerHTML += html;
 						scrollChatToBottom();
-      addHistory(html);
+						addHistory(html);
 					} else {
 						// if message contains text "has joined" or "changed their name" then color grey
 						if (message.indexOf('has joined') > 0 ||message.indexOf('has left') > 0 || message.indexOf('changed their name') > 0) {
@@ -99,8 +99,8 @@
 						}
 						document.getElementById('chat').innerHTML += message;
 						scrollChatToBottom();
-      // notifications
-      addHistory(message);
+						// notifications
+						addHistory(message);
 					}
 				}
 			});
@@ -176,23 +176,23 @@
 
 			updateUsernameColor();
 
-   // history
-   function loadHistory(){
-    if(!"history" in localStorage) return;
-    const hist = JSON.parse(localStorage.getItem("history"));
-    hist.forEach((msg) => {
-     document.getElementById('chat').innerHTML += msg;
-    });
-   }
+			// history
+			function loadHistory(){
+				if (!'history' in localStorage) return;
+				const hist = JSON.parse(localStorage.getItem("history"));
+				hist.forEach((msg) => {
+					document.getElementById('chat').innerHTML += msg;
+				});
+			}
 
-   function addHistory(item){
-    let hist = JSON.parse(localStorage.getItem("history")) || [];
-    hist.push(item);
-    if(hist.length > 99) hist.shift();
-    localStorage.setItem("history", JSON.stringify(hist));
-   }
+			function addHistory(item){
+				let hist = JSON.parse(localStorage.getItem("history")) || [];
+				hist.push(item);
+				if (hist.length > 99) hist.shift();
+				localStorage.setItem("history", JSON.stringify(hist));
+			}
 
-   loadHistory();
+			loadHistory();
 
 		</script>
 	</body>
