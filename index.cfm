@@ -196,7 +196,7 @@
 
 			// username
 			function getUsername(){
-				if (!('username') in localStorage) return;
+				if (!'username' in localStorage) return;
 				document.getElementById('name').value = localStorage.getItem('username');
 				updateUsernameColor();
 			}
