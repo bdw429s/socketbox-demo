@@ -14,12 +14,12 @@
 		<main class="container">
 		<h1>SocketBox Demo</h1>
 		<p>
-			This is a simple chat application that uses WebSockets to communicate with the server. It is built using CFML (running on BoxLang) and our new 
-			<a href="https://forgebox.io/view/socketbox">SocketBox library</a>.  SocketBox is a new feature built into CommandBox and the BoxLang MiniServer 
-			to be able to easily create WebSocket servers in CFML that work for Adobe ColdFusion, Lucee Server, or BoxLang!  
+			This is a simple chat application that uses WebSockets to communicate with the server. It is built using CFML (running on BoxLang) and our new
+			<a href="https://forgebox.io/view/socketbox">SocketBox library</a>.  SocketBox is a new feature built into CommandBox and the BoxLang MiniServer
+			to be able to easily create WebSocket servers in CFML that work for Adobe ColdFusion, Lucee Server, or BoxLang!
 		</p>
-		
-		<label for="name">Your Name:</label> 
+
+		<label for="name">Your Name:</label>
 		<input type="text" id="name" name="name" size="10" value="User #randRange( 1000, 5000 )#" onChange="socket.send( 'user-rename: ' + this.value ); updateUsernameColor();" /><br>
 		<span id="users-online" title="">
 		<strong>Users Online: &nbsp;&nbsp; <span id="users" style="font-size: 1.5em;">0</span></strong><br>
@@ -28,7 +28,7 @@
 		<br/>
 		<br/>
 		<div id="chat" class="chat"></div>
-	
+
 		<form action="sender.cfm" method="post" onsubmit="return false;">
 			<label for="message">Type a message to send to the chat room:</label>
 			<input type="text" id="message" name="message" value="" size="50" />
@@ -55,7 +55,6 @@
 				connectionAddress = connectionAddress & '/ws';
 			</cfscript>
 			const socket = new WebSocket('#connectionAddress#');
-
 			// Event listener for when the connection is open
 			socket.addEventListener('open', function (event) {
 				console.log('Connected to WebSocket server');
@@ -78,7 +77,7 @@
 						return escapeHTML(name);
 					}).join('\n');
 					document.getElementById('users-online').title = userList;
-					
+
 				} else if( message.indexOf('new-message: ') == 0 ) {
 					message = message.replace('new-message: ', '');
 					// if message is "user name: actual message"
@@ -87,8 +86,10 @@
 						let parts = message.split(/:(.+)/); // Split only on the first colon
 						let username = parts[0];
 						let userColor = getColorForUsername(username);
-						document.getElementById('chat').innerHTML += '<strong style="color:' + userColor + ';">' + escapeHTML(username) + ':</strong> ' + escapeHTML(parts[1]) + "<br>";
-						scrollChatToBottom(); 
+      let html = '<strong style="color:' + userColor + ';">' + escapeHTML(username) + ':</strong> ' + escapeHTML(parts[1]) + "<br>";
+						document.getElementById('chat').innerHTML += html;
+						scrollChatToBottom();
+      addHistory(html);
 					} else {
 						// if message contains text "has joined" or "changed their name" then color grey
 						if (message.indexOf('has joined') > 0 ||message.indexOf('has left') > 0 || message.indexOf('changed their name') > 0) {
@@ -97,8 +98,9 @@
 							message = '<b style="color: red;">' + escapeHTML(message) + "</b><br>";
 						}
 						document.getElementById('chat').innerHTML += message;
-						scrollChatToBottom(); 
-
+						scrollChatToBottom();
+      // notifications
+      addHistory(message);
 					}
 				}
 			});
@@ -116,7 +118,7 @@
 				const chat = document.getElementById('chat');
 				chat.scrollTop = chat.scrollHeight;
 			}
-			
+
 			let colors = [
 				'##DB0538', // Red
 				'##14960B', // Green
@@ -149,7 +151,7 @@
 				}
 				return hash;
 			}
-			
+
 			// Function to get a color based on the username
 			function getColorForUsername(username) {
 				const hash = hashUsername(username);
@@ -173,6 +175,25 @@
 			});
 
 			updateUsernameColor();
+
+   // history
+   function loadHistory(){
+    if(!"history" in localStorage) return;
+    const hist = JSON.parse(localStorage.getItem("history"));
+    hist.forEach((msg) => {
+     document.getElementById('chat').innerHTML += msg;
+    });
+   }
+
+   function addHistory(item){
+    let hist = JSON.parse(localStorage.getItem("history")) || [];
+    hist.push(item);
+    if(hist.length > 99) hist.shift();
+    localStorage.setItem("history", JSON.stringify(hist));
+   }
+
+   loadHistory();
+
 		</script>
 	</body>
 </cfoutput>
