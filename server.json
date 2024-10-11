@@ -1,0 +1,14 @@
+{
+    "app":{
+        "cfengine":"boxlang"
+    },
+    "JVM":{
+        "javaVersion":"openjdk21_jdk"
+    },
+    "profile":"none",
+    "web":{
+        "websocket":{
+            "enable":"true"
+        }
+    }
+}
