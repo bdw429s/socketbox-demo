@@ -24,5 +24,5 @@ RUN rm -r /app/*
 COPY --from=builder /app /app
 
 # Compile app
-RUN  java -cp /usr/local/lib/boxlang-miniserver-1.0.0-snapshot-all.jar ortus.boxlang.compiler.BXCompiler --source /app --target /app --basePath /app
+# RUN  java -cp /usr/local/lib/boxlang-miniserver-1.0.0-snapshot-all.jar ortus.boxlang.compiler.BXCompiler --source /app --target /app --basePath /app
 
