@@ -18,6 +18,10 @@
 			<a href="https://forgebox.io/view/socketbox">SocketBox library</a>.  SocketBox is a new feature built into CommandBox and the BoxLang MiniServer
 			to be able to easily create WebSocket servers in CFML that work for Adobe ColdFusion, Lucee Server, or BoxLang!
 		</p>
+		<p>
+			Full source code for this demo available here: <a href="https://github.com/bdw429s/socketbox-demo">bdw429s/socketbox-demo</a>.  You can run this 
+			yourself on the latest BoxLang MiniServer or on CommandBox 6.1+ and any CF engine.
+		</p>		
 
 		<label for="name">Your Name:</label>
 		<input type="text" id="name" name="name" size="10" value="User #randRange( 1000, 5000 )#" onChange="socket.send( 'user-rename: ' + this.value ); updateUsernameColor(); updateUsername(this.value);" /><br>
