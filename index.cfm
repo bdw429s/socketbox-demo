@@ -32,7 +32,8 @@
 		<br/>
 		<br/>
 		<div id="chat" class="chat"></div>
-		<a href="##" style="float: right;" onclick="clearChat()">Clear Chat</a><BR>
+		<span style="float: left;" id="status"><em>Connecting...</em></span>
+		<a href="##" style="float: right;" onclick="clearChat()">Clear Chat</a><br><br>
 
 
 		<form action="sender.cfm" method="post" onsubmit="return false;">
@@ -42,7 +43,7 @@
 		</form>
 		</main>
 		<script language="javascript">
-			reconnecting = false;
+			reconnectAttempt = 0;
 			function sendMessage() {
 				el = document.getElementById('message');
 				if( el.value.trim() == '' ) return;
@@ -65,12 +66,11 @@
 			function connect() {
 				socket = new WebSocket('#connectionAddress#');
 				socket.onopen = function() {
-					reconnecting = false;
+					reconnectAttempt = 0;
 					console.log('Connected to WebSocket server');
 					socket.send( "new-user: " + document.getElementById('name').value );
-					message = '<br><span style="color: grey;"><em>WebSocket connected.</em></span><br>';
-					document.getElementById('chat').innerHTML += message;
-					scrollChatToBottom();
+					message = '<em style="color: green;">Connected</em>';
+					document.getElementById('status').innerHTML = message;
 				};
 
 				socket.onmessage = function(event) {
@@ -101,10 +101,19 @@
 							document.getElementById('chat').innerHTML += html;
 							scrollChatToBottom();
 							addHistory(html);
+							sound( 'message' );
 						} else {
 							// if message contains text "has joined" or "changed their name" then color grey
 							if (message.indexOf('has joined') > 0 ||message.indexOf('has left') > 0 || message.indexOf('changed their name') > 0) {
 								message = '<span style="color: grey;">' + escapeHTML(message) + '</span><br>';
+								// Some simple de-duping for repeated "joined chat" messages when server is cycling
+								let lastChild = document.getElementById('chat').lastElementChild;
+								if (lastChild && lastChild.previousElementSibling && lastChild.previousElementSibling.tagName === 'SPAN') {
+									let lastSpan = lastChild.previousElementSibling;
+									if (message.indexOf( lastSpan.outerHTML ) !== -1 ) {
+										message = '';
+									}
+								}
 							} else {
 								message = '<b style="color: red;">' + escapeHTML(message) + "</b><br>";
 							}
@@ -112,21 +121,20 @@
 							scrollChatToBottom();
 							// notifications
 							addHistory(message);
+							if (message.indexOf('has joined') > 0) {
+								sound( 'enter' );
+							} else if (message.indexOf('has left') > 0) {
+								sound( 'exit' );
+							}
 						}
 					}
 				};
 
 				socket.onclose = function(e) {
-					if( !reconnecting ) {
-						console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
-						message = '<span style="color: grey;"><em>WebSocket is closed. Reconnecting...</em></span>';
-						document.getElementById('chat').innerHTML += message;
-						scrollChatToBottom();
-					} else {
-						document.getElementById('chat').innerHTML += '.';
-					}
+					reconnectAttempt++;
+					message = '<em style="color: red;">Reconnecting... (Attempt ' + reconnectAttempt + ')</em>';
+					document.getElementById('status').innerHTML = message;
 					
-					reconnecting = true;
 					setTimeout(function() {
 						connect();
 					}, 1000);
@@ -234,11 +242,19 @@
 				localStorage.removeItem('history');
 			}
 
+			function sound( name ) {
+				let audio = document.getElementById( name + '-sound' );
+				audio.play();
+			}
+
 			connect();
 			updateUsernameColor();
 			loadHistory();
 			getUsername()
 		</script>
+		<audio id="enter-sound" src="/audio/enter.mp3" preload="auto"></audio>
+		<audio id="exit-sound" src="/audio/exit.mp3" preload="auto"></audio>
+		<audio id="message-sound" src="/audio/message.mp3" preload="auto"></audio>
 	</body>
 </cfoutput>
 </html>
