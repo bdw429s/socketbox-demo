@@ -114,6 +114,13 @@
 										message = '';
 									}
 								}
+								if( message != '' ) {
+									if (message.indexOf('has joined') > 0) {
+										sound( 'enter' );
+									} else if (message.indexOf('has left') > 0) {
+										sound( 'exit' );
+									}
+								}
 							} else {
 								message = '<b style="color: red;">' + escapeHTML(message) + "</b><br>";
 							}
@@ -121,11 +128,6 @@
 							scrollChatToBottom();
 							// notifications
 							addHistory(message);
-							if (message.indexOf('has joined') > 0) {
-								sound( 'enter' );
-							} else if (message.indexOf('has left') > 0) {
-								sound( 'exit' );
-							}
 						}
 					}
 				};
